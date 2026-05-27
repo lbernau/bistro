@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: deichmann-bistro
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pim?sslmode=disable&client_encoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+springdoc:
+  packages-to-scan: io.github.lbernau.bistro.controller
+io:
+  github:
+    lbernau:
+      bistro:
+        import-folder: data/import
+        error-folder: data/archive/error
+        success-folder: data/archive/success
+        happy-hour-discount: 25.0

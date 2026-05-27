@@ -1,0 +1,99 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1779814757772-1
+      author: lars.bernau
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_orderitem
+                  name: order_item_id
+                  type: UUID
+              - column:
+                  name: product_id
+                  type: BIGINT
+              - column:
+                  name: product_name
+                  type: VARCHAR(255)
+              - column:
+                  name: quantity
+                  type: INT
+              - column:
+                  name: unit_price
+                  type: DECIMAL
+              - column:
+                  name: line_total
+                  type: DECIMAL
+              - column:
+                  name: order_id
+                  type: UUID
+            tableName: order_item
+  - changeSet:
+      id: 1779814757772-2
+      author: lars.bernau
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_orders
+                  name: id
+                  type: UUID
+              - column:
+                  name: order_date
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: table_number
+                  type: INT
+              - column:
+                  name: subtotal
+                  type: DECIMAL
+              - column:
+                  name: discount_percentage
+                  type: DECIMAL
+              - column:
+                  name: discount_amount
+                  type: DECIMAL
+              - column:
+                  name: total
+                  type: DECIMAL
+            tableName: orders
+  - changeSet:
+      id: 1779814757772-3
+      author: lars.bernau
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_product
+                  name: product_id
+                  type: BIGINT
+              - column:
+                  name: product_name
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL
+            tableName: product
+  - changeSet:
+      id: 1779814757772-4
+      author: lars.bernau
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: order_id
+            baseTableName: order_item
+            constraintName: FK_ORDERITEM_ON_ORDER
+            referencedColumnNames: id
+            referencedTableName: orders
