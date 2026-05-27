@@ -20,4 +20,4 @@ io:
         import-folder: data/import
         error-folder: data/archive/error
         success-folder: data/archive/success
-        happy-hour-discount: 25.0
+        happy-hour-discount: 50.0
