@@ -1,3 +1,16 @@
+## Happy Hour
+Die HappyHour rabattiert aktuell die gesamte Bestellung (konfigurierbar). Die Aufgabe beschreibt als Beispiel "2 Pizzen zum Preis von 1",
+allerdings wird auf dem Belegformat nur ein Gesamtrabatt angegeben, dort ist ein Produktbezogener Rabatt nicht vorgesehen.
+
+## Imports von Produkten
+Der Produkt-Import überwacht das Verzeichnis ./data/import  
+Zu Test-Zwecken liegen im Archiv (./data/archive) zwei Dateien um einen erfolgreichen bzw. nicht erfolgreichen Import anzustoßen
+
+[!NOTE]  
+Aufgrund der Anforderungen wurde auf das Testing des Integration-Flows verzichtet.
+
+
+---
 # Aufgabe: Mini-Bestellsystem für ein Bistro
 Entwicklung eines Spring Boot Projekts, das eine einfache REST-API für ein Bistro bereitstellt. Kunden 
 können Produkte anzeigen und Bestellungen aufgeben. Die Produkte werden automatisiert über eine CSV-
@@ -37,13 +50,4 @@ Total: 24.75
 
 ◦ Unit- und Integration-Tests für Service- und Controller-Layer  
 ◦ Verwendung von DTOs  
-◦ Swagger/OpenAPI Integration  
-
----
-
-## Verwendung des Imports
-Der Produkt-Import überwacht das Verzeichnis ./data/import  
-Zu Test-Zwecken liegen im Archiv (./data/archive) zwei Dateien um einen erfolgreichen bzw. nicht erfolgreichen Import anzustoßen
-
-[!NOTE]  
-Aufgrund der Anforderungen wurde auf das Testing des Integration-Flows verzichtet.
+◦ Swagger/OpenAPI Integration
