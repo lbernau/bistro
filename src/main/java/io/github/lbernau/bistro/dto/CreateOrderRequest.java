@@ -23,6 +23,7 @@ public class CreateOrderRequest {
     @Positive(message = "Table number cannot be zero or negative")
     private Integer tableNumber;
 
+    @Builder.Default
     @NotEmpty(message = "You need to order at least one item")
     private List<@Valid CreateOrderItemDto> orderedItems = new ArrayList<>();
 }
