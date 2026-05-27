@@ -21,7 +21,18 @@ jobs:
           cache: maven
 
       - name: Run tests
-        run: mvn clean verify
+        run: mvn clean verify jacoco:report
 
-      - name: Generate Coverage
-        run: mvn test jacoco:report
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v5
+        if: always()
+        with:
+          report_paths: |
+            target/surefire-reports/*.xml
+            target/failsafe-reports/*.xml
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco
