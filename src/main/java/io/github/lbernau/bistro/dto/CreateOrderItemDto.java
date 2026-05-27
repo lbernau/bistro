@@ -17,6 +17,7 @@ public class CreateOrderItemDto {
     @NotNull(message = "ProductId must not be null.")
     private Long productId;
 
+    @NotNull(message = "Quantity must not be null.")
     @Positive(message = "Quantity cannot be less then 1.")
     private Integer quantity;
 }

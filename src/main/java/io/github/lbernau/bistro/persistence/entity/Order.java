@@ -74,7 +74,7 @@ public class Order
         sb.append("-------------------------\n");
         sb.append("Subtotal: %.2f%n".formatted(subtotal));
         sb.append("Discount: %.2f%%%n".formatted(discountPercentage));
-        sb.append("Total: %.2f%n".formatted(discountAmount));
+        sb.append("Total: %.2f%n".formatted(total));
 
         return sb.toString();
     }
