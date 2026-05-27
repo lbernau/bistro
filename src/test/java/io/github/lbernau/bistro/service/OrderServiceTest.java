@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -51,19 +52,14 @@ public class OrderServiceTest {
     @BeforeEach
     void setup() {
         // default: no happy hour
-        initializeServiceAt("2026-05-27T10:30:00Z"); // UTC String!
+        initializeServiceAt(LocalDateTime.of(2026, 5, 27, 10, 30));
     }
 
     @Test
     void shouldApplyHappyHourDiscount() {
-        initializeServiceAt("2026-05-27T15:30:00Z"); // UTC String!
+        initializeServiceAt(LocalDateTime.of(2026, 5, 27, 17, 30));
 
-        Product pizza = Product.builder()
-                               .productId(1L)
-                               .productName("Pizza Hawaii")
-                               .price(BigDecimal.valueOf(10))
-                               .build();
-
+        Product pizza = getPizzaHawaii();
         CreateOrderRequest request =
                         CreateOrderRequest.builder()
                                           .tableNumber(10)
@@ -79,7 +75,6 @@ public class OrderServiceTest {
         when(orderValidator.validateCreateOrderRequest(request)).thenReturn(Map.of());
         when(productService.getProduct(1L)).thenReturn(pizza);
         when(properties.happyHourDiscount()).thenReturn(BigDecimal.TEN);
-
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Order order = service.createOrder(request);
@@ -97,12 +92,7 @@ public class OrderServiceTest {
 
     @Test
     void shouldNotApplyDiscountOutsideHappyHour() {
-        Product pizza = Product.builder()
-                               .productId(1L)
-                               .productName("Pizza Hawaii")
-                               .price(BigDecimal.valueOf(10))
-                               .build();
-
+        Product pizza = getPizzaHawaii();
         CreateOrderRequest request =
                         CreateOrderRequest.builder()
                                           .tableNumber(10)
@@ -118,7 +108,6 @@ public class OrderServiceTest {
         when(orderValidator.validateCreateOrderRequest(request)).thenReturn(Map.of());
         when(productService.getProduct(1L)).thenReturn(pizza);
         when(properties.happyHourDiscount()).thenReturn(BigDecimal.TEN);
-
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Order order = service.createOrder(request);
@@ -153,11 +142,7 @@ public class OrderServiceTest {
                                           .build();
 
         when(orderValidator.validateCreateOrderRequest(request)).thenReturn(Map.of());
-        when(productService.getProduct(1L)).thenReturn(Product.builder()
-                                                              .productId(1L)
-                                                              .productName("Pizza Hawaii")
-                                                              .price(BigDecimal.valueOf(10))
-                                                              .build());
+        when(productService.getProduct(1L)).thenReturn(getPizzaHawaii());
         when(productService.getProduct(2L)).thenReturn(Product.builder()
                                                               .productId(2L)
                                                               .productName("Cola")
@@ -175,7 +160,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    void shouldThrowValidationExceptionWhenProductsInvalid() {
+    void shouldThrowValidationExceptionWhenProductDoesNotExist() {
         CreateOrderRequest request =
                         CreateOrderRequest.builder()
                                           .tableNumber(10)
@@ -219,11 +204,7 @@ public class OrderServiceTest {
                                           )
                                           .build();
 
-        Product pizza = Product.builder()
-                               .productId(1L)
-                               .productName("Pizza Hawaii")
-                               .price(BigDecimal.valueOf(10))
-                               .build();
+        Product pizza = getPizzaHawaii();
 
         when(orderValidator.validateCreateOrderRequest(request)).thenReturn(Map.of());
         when(productService.getProduct(1L)).thenReturn(pizza);
@@ -231,13 +212,21 @@ public class OrderServiceTest {
 
         service.createOrder(request);
         verify(productService, times(1)).getProduct(1L);
+        verify(orderRepository).save(any(Order.class));
     }
 
-    private void initializeServiceAt(String instant) {
-        clock = Clock.fixed(
-                        Instant.parse(instant),
-                        ZoneId.of("Europe/Berlin")
-        );
+    private void initializeServiceAt(LocalDateTime localDateTime) {
+        ZoneId zone = ZoneId.of("Europe/Berlin");
+        clock = Clock.fixed(localDateTime.atZone(zone).toInstant(), zone);
         service = new OrderService(clock, productService, orderValidator, orderRepository, properties);
+    }
+
+
+    private Product getPizzaHawaii() {
+        return Product.builder()
+                      .productId(1L)
+                      .productName("Pizza Hawaii")
+                      .price(BigDecimal.valueOf(10))
+                      .build();
     }
 }
