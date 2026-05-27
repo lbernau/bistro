@@ -2,7 +2,7 @@
 Die HappyHour rabattiert aktuell die gesamte Bestellung (konfigurierbar). Die Aufgabe beschreibt als Beispiel "2 Pizzen zum Preis von 1",
 allerdings wird auf dem Belegformat nur ein Gesamtrabatt angegeben, dort ist ein Produktbezogener Rabatt nicht vorgesehen.
 
-## Imports von Produkten
+## Import von Produkten
 Der Produkt-Import überwacht das Verzeichnis ./data/import  
 Zu Test-Zwecken liegen im Archiv (./data/archive) zwei Dateien um einen erfolgreichen bzw. nicht erfolgreichen Import anzustoßen
 
