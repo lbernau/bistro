@@ -11,6 +11,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -76,10 +77,15 @@ class ProductControllerTestIT {
     @Test
     void shouldNotFindProductById() {
         final long productId = 10L;
-        ResponseEntity<ProductDto> response = restTemplate.getForEntity("/products/" + productId, ProductDto.class);
+        ResponseEntity<ProblemDetail> response = restTemplate.getForEntity("/products/" + productId, ProblemDetail.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isNull();
+        assertThat(response.hasBody()).isTrue();
+        assertThat(response.getBody()).isNotNull();
+
+        final ProblemDetail problemDetail = response.getBody();
+        assertThat(problemDetail).isNotNull();
+        assertThat(problemDetail.getTitle()).isEqualTo("Product with id: " + productId + " not found");
     }
 
     @Test

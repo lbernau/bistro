@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lbernau.bistro.dto.CreateOrderItemDto;
 import io.github.lbernau.bistro.dto.CreateOrderRequest;
 import io.github.lbernau.bistro.exception.OrderValidationException;
+import io.github.lbernau.bistro.exception.ResourceNotFoundException;
 import io.github.lbernau.bistro.persistence.entity.Order;
 import io.github.lbernau.bistro.persistence.entity.OrderItem;
 import io.github.lbernau.bistro.service.OrderService;
@@ -42,7 +43,7 @@ class OrderControllerWebTest {
     void findProductByIdShouldReturnNotFound()
                     throws Exception {
         UUID orderId = UUID.randomUUID();
-        when(orderService.findOrderById(any(UUID.class))).thenReturn(null);
+        when(orderService.findOrderById(any(UUID.class))).thenThrow(new ResourceNotFoundException("Order with id: " + orderId + " not found"));
         mockMvc.perform(get("/orders/" + orderId))
                .andExpect(status().isNotFound());
 

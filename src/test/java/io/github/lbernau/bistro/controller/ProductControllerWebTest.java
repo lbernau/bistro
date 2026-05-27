@@ -2,6 +2,7 @@ package io.github.lbernau.bistro.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lbernau.bistro.dto.ProductDto;
+import io.github.lbernau.bistro.exception.ResourceNotFoundException;
 import io.github.lbernau.bistro.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ class ProductControllerWebTest {
     @Test
     void findProductByIdShouldReturnNotFound()
                     throws Exception {
-        when(productService.findProductDtoById(anyLong())).thenReturn(null);
+        when(productService.findProductDtoById(anyLong())).thenThrow(new ResourceNotFoundException("Product with id: 123 not found"));
         mockMvc.perform(get("/products/123"))
                .andExpect(status().isNotFound());
 

@@ -3,6 +3,7 @@ package io.github.lbernau.bistro.service;
 import io.github.lbernau.bistro.dto.CreateOrderItemDto;
 import io.github.lbernau.bistro.dto.CreateOrderRequest;
 import io.github.lbernau.bistro.exception.OrderValidationException;
+import io.github.lbernau.bistro.exception.ResourceNotFoundException;
 import io.github.lbernau.bistro.persistence.entity.Order;
 import io.github.lbernau.bistro.persistence.entity.OrderItem;
 import io.github.lbernau.bistro.persistence.entity.Product;
@@ -41,7 +42,7 @@ public class OrderService {
 
     public Order findOrderById(UUID orderId) {
         return orderRepository.findById(orderId)
-                              .orElse(null);
+                              .orElseThrow(() -> new ResourceNotFoundException("Order with id: " + orderId + " not found"));
     }
 
     public Order createOrder(CreateOrderRequest createOrderRequest) {

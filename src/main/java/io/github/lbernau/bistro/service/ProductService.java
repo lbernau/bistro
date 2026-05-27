@@ -1,6 +1,7 @@
 package io.github.lbernau.bistro.service;
 
 import io.github.lbernau.bistro.dto.ProductDto;
+import io.github.lbernau.bistro.exception.ResourceNotFoundException;
 import io.github.lbernau.bistro.persistence.entity.Product;
 import io.github.lbernau.bistro.persistence.repository.ProductRepository;
 import io.github.lbernau.bistro.util.EntityDtoMapper;
@@ -29,7 +30,7 @@ public class ProductService {
     public ProductDto findProductDtoById(Long productId) {
         return productRepository.findById(productId)
                                 .map(product -> EntityDtoMapper.convert(product, ProductDto.class))
-                                .orElse(null);
+                                .orElseThrow(() -> new ResourceNotFoundException("Product with id: " + productId + " not found"));
     }
 
     public void saveProducts(List<Product> products) {

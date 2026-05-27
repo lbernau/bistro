@@ -2,7 +2,7 @@ package io.github.lbernau.bistro.controller;
 
 import io.github.lbernau.bistro.dto.CreateOrderItemDto;
 import io.github.lbernau.bistro.dto.CreateOrderRequest;
-import io.github.lbernau.bistro.dto.CreateOrderResponse;
+import io.github.lbernau.bistro.dto.OrderResponse;
 import io.github.lbernau.bistro.persistence.entity.Order;
 import io.github.lbernau.bistro.persistence.entity.OrderItem;
 import io.github.lbernau.bistro.persistence.entity.Product;
@@ -84,7 +84,7 @@ public class OrderControllerTestIT {
                                                                                                      .build()))
                                                              .build();
 
-        ResponseEntity<CreateOrderResponse> response = restTemplate.postForEntity("/orders", request, CreateOrderResponse.class);
+        ResponseEntity<OrderResponse> response = restTemplate.postForEntity("/orders", request, OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.hasBody()).isTrue();
         assertThat(response.getBody()).isNotNull();
@@ -169,17 +169,24 @@ public class OrderControllerTestIT {
                              .total(BigDecimal.valueOf(18))
                              .build());
 
-        ResponseEntity<String> response = restTemplate.getForEntity("/orders/" + order.getId(), String.class);
+        ResponseEntity<OrderResponse> response = restTemplate.getForEntity("/orders/" + order.getId(), OrderResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.hasBody()).isTrue();
-        assertThat(response.getBody()).contains("Pizza Hawaii");
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody()
+                           .getReceipt()).contains("Pizza Hawaii");
     }
 
     @Test
     void shouldNotFindOrder() {
         final UUID randomUUID = UUID.randomUUID();
-        ResponseEntity<String> response = restTemplate.getForEntity("/orders/" + randomUUID, String.class);
+        ResponseEntity<ProblemDetail> response = restTemplate.getForEntity("/orders/" + randomUUID, ProblemDetail.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isNull();
+        assertThat(response.hasBody()).isTrue();
+        assertThat(response.getBody()).isNotNull();
+
+        final ProblemDetail problemDetail = response.getBody();
+        assertThat(problemDetail).isNotNull();
+        assertThat(problemDetail.getTitle()).isEqualTo("Order with id: " + randomUUID + " not found");
     }
 }
